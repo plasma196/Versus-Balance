@@ -1,0 +1,11 @@
+mod = [
+	"Versus Balance"
+]
+
+package = [
+	"resource_packages/Versus Balance/Versus Balance"
+]
+
+lua = [
+	"scripts/mods/Versus Balance/*"
+]
