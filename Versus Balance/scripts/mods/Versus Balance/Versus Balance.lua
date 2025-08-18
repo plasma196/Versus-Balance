@@ -16,7 +16,7 @@ mod._quick_localize = function (self, text_id)
         end
     end
 end
-mod:hook("Localize", function(func, text_id)
+ mod:hook("Localize", function(func, text_id)
     local str = mod:_quick_localize(text_id)
     if str then return str end
     return func(text_id)
@@ -236,6 +236,18 @@ end
 
 -- Damage Profile Templates
 NewDamageProfileTemplates = NewDamageProfileTemplates or {}
+
+
+
+--[[ 
+
+  **Qol
+
+]]
+
+-- start game duration lowered
+GameModeSettings.versus.pre_start_round_duration = 30 --15
+GameModeSettings.versus.initial_set_pre_start_duration = 45 --20
 
 --[[
 
@@ -562,7 +574,7 @@ NewDamageProfileTemplates.thrown_javelin_vs_vrb = {
 				0.2,
 			},
 			impact = {
-				1,
+				.5, --1
 				1,
 				1,
 				1,
@@ -588,13 +600,13 @@ NewDamageProfileTemplates.thrown_javelin_vs_vrb = {
 				impact = 0.10, --0.4
 			},
 			range_modifier_settings = {
-				dropoff_end = 30,
-				dropoff_start = 15,
+				dropoff_end = 15, --30
+				dropoff_start = 7.5, --15
 			},
 		}
 }
 Weapons.javelin_template_vs.actions.action_one.throw_charged.impact_data.damage_profile = "thrown_javelin_vs_vrb"
-
+--Weapons.javelin_weapon_template.actions.ammo_data.max_ammo = 2,
 -- Saltzpyre
 
 -- Sienna
@@ -612,6 +624,56 @@ Weapons.javelin_template_vs.actions.action_one.throw_charged.impact_data.damage_
 -- Huntsman
 
 -- Footknight
+
+-- comrades 50% dr changed to 20% dr (overriding adventure)
+mod:modify_talent_buff_template("empire_soldier", "markus_knight_guard_defence_buff", {
+    mechanism_overrides = {
+		versus = {
+			multiplier = -0.2,
+		}
+	}
+})
+mod:modify_talent("es_knight", 4, 3, {
+	mechanism_overrides = {
+		versus = {
+			description_values = {
+				{
+					value_type = "percent",
+					value = 0.1
+				},
+				{
+					value_type = "percent",
+					value = 0.2
+				},
+				{
+					value_type = "percent",
+					value = 0.1
+				}
+			},
+		}
+	}
+})
+
+-- numb to pain 1 sec instead of 3
+mod:modify_talent_buff_template("empire_soldier", "markus_knight_ability_invulnerability_buff", {
+    mechanism_overrides = {
+		versus = {
+			duration = 1,
+		}
+	}
+})
+mod:modify_talent("es_knight", 6, 1, {
+	mechanism_overrides = {
+		versus = {
+			description_values = {
+				{
+					value = 1
+				}
+			},
+		}
+	}
+})
+
 
 -- Grail Knight
 
@@ -638,6 +700,16 @@ Weapons.javelin_template_vs.actions.action_one.throw_charged.impact_data.damage_
 -- Zealot
 
 -- Warrior Priest
+
+-- reduce the damage of WP bubble
+-- reduced it by 66% against monsters
+DLCSettings.bless.buff_templates.victor_priest_nuke_dot.buffs[1].mechanism_overrides.versus = {
+    damage_profile = "victor_priest_nuke_dot_vs",
+    duration = 1.5, -- 5
+    time_between_dot_damages = 1, -- 0.7
+    update_start_delay = 1 -- 0.7
+}
+DamageProfileTemplates.victor_priest_nuke_dot_vs.armor_modifier.attack[3] = 1.0
 
 -- Battle Wizard
 
