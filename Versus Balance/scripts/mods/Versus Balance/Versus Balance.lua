@@ -271,6 +271,9 @@ GameModeSettings.versus.player_wounds = {
     spectators = 0,
 }
 
+-- set medkit to 80%
+AttackTemplates.heal_bandage.mechanism_overrides.versus.heal_percent = .8 --1
+
 -- Suicide
 -- Cooldown?
 mod:command("die_die", mod:localize("die_command_description"), function()
@@ -656,6 +659,7 @@ NewDamageProfileTemplates.thrown_javelin_vs_vrb = {
 }
 Weapons.javelin_template_vs.actions.action_one.throw_charged.impact_data.damage_profile = "thrown_javelin_vs_vrb"
 --Weapons.javelin_weapon_template.actions.ammo_data.max_ammo = 2,
+
 -- Saltzpyre
 
 -- Sienna
@@ -703,11 +707,23 @@ mod:modify_talent("es_knight", 4, 3, {
 	}
 })
 
+-- hero time 40%
+mod:add_buff_function("markus_hero_time_reset", function (unit, buff, params)
+	local player_unit = unit
+
+	if Unit.alive(player_unit) then
+		local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+
+		career_extension:reduce_activated_ability_cooldown_percent(0.4)
+	end
+end)
+mod:add_text("markus_knight_charge_reset_on_incapacitated_allies_desc", "Refunds 40% of cooldown upon allied incapacitation")
+
 -- numb to pain 1 sec instead of 3
 mod:modify_talent_buff_template("empire_soldier", "markus_knight_ability_invulnerability_buff", {
     mechanism_overrides = {
 		versus = {
-			duration = 1,
+			duration = 1.25,
 		}
 	}
 })
