@@ -245,9 +245,58 @@ NewDamageProfileTemplates = NewDamageProfileTemplates or {}
 
 ]]
 
+-- picking characters speed reduced
+GameModeSettings.versus.character_picking_settings = {
+    closing_time = 1,
+    parading_duration = 1,
+    player_pick_time = 6,
+    startup_time = 3,
+}
+
 -- start game duration lowered
 GameModeSettings.versus.pre_start_round_duration = 30 --15
 GameModeSettings.versus.initial_set_pre_start_duration = 45 --20
+
+
+--[[
+
+	**Gameplay
+
+]]
+
+-- set maximum amount of wounds to 2
+GameModeSettings.versus.player_wounds = {
+    dark_pact = 1,
+    heroes = 3,
+    spectators = 0,
+}
+
+-- Suicide
+-- Cooldown?
+mod:command("die_die", mod:localize("die_command_description"), function()
+	-- check if you are in the keep
+	if DamageUtils.is_in_inn then
+		mod:echo(mod:localize("die_cant_die"))
+		return
+	end
+
+	-- check if you are a player
+	local peer_id = Network.peer_id()
+	local party_id = Managers.mechanism:reserved_party_id_by_peer(peer_id)
+	local party_manager = Managers.party
+	local party = party_manager:get_party(party_id)
+	local side = Managers.state.side.side_by_party[party]
+	local is_dark_pact = side and side:name() == "dark_pact"
+	if not is_dark_pact then
+		mod:echo(mod:localize("die_cant_die_player"))
+		return
+	end
+
+	local player_unit = Managers.player:local_player().player_unit
+	local death_system = Managers.state.entity:system("death_system")
+	death_system:kill_unit(player_unit, {})
+	mod:echo(mod:localize("die_die"))
+end)
 
 --[[
 
