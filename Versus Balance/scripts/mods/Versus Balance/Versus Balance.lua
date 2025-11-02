@@ -271,9 +271,6 @@ GameModeSettings.versus.player_wounds = {
     spectators = 0,
 }
 
--- set medkit to 80%
-AttackTemplates.heal_bandage.mechanism_overrides.versus.heal_percent = .8 --1
-
 -- Suicide
 -- Cooldown?
 mod:command("die_die", mod:localize("die_command_description"), function()
@@ -485,7 +482,7 @@ NewDamageProfileTemplates.shot_shotgun_grudgeraker_vs_vrb = {
 Weapons.grudge_raker_template_1_vs.actions.action_one.default.damage_profile = "shot_shotgun_grudgeraker_vs_vrb"
 
 -- Trollhammer
--- Remove Trollhammer from IB and Engi
+-- Remove Trollhammer from IB and Engi (tempt fix)
 ItemMasterList.vs_dr_deus_01.can_wield = {}
 
 
@@ -574,7 +571,7 @@ Weapons.crossbow_template_1_vs.actions.action_one.zoomed_shot.impact_data.damage
 
 -- Kerillian
 
---javelin
+-- Briar Javelin
 --reduced stagger
 NewDamageProfileTemplates.thrown_javelin_vs_vrb = {
 	charge_value = "projectile",
@@ -660,10 +657,13 @@ NewDamageProfileTemplates.thrown_javelin_vs_vrb = {
 Weapons.javelin_template_vs.actions.action_one.throw_charged.impact_data.damage_profile = "thrown_javelin_vs_vrb"
 --Weapons.javelin_weapon_template.actions.ammo_data.max_ammo = 2,
 
+-- Deepwood Staff
+-- reduced the special lift timer from 40 sec to 25 sec
+
 -- Saltzpyre
 
 -- Sienna
-
+-- "Fireball Staff" to never get the QQ treatment cause I play on controller so therefore cant aim & QQ at the sametime. Sorry modded PC players :3
 
 
 --[[ 
@@ -678,7 +678,7 @@ Weapons.javelin_template_vs.actions.action_one.throw_charged.impact_data.damage_
 
 -- Footknight
 
--- comrades 50% dr changed to 20% dr (overriding adventure)
+-- Talent 4-3 "Comrades in Arms"; reduced 50% dr changed to 20% dr (overriding adventure)
 mod:modify_talent_buff_template("empire_soldier", "markus_knight_guard_defence_buff", {
     mechanism_overrides = {
 		versus = {
@@ -707,23 +707,11 @@ mod:modify_talent("es_knight", 4, 3, {
 	}
 })
 
--- hero time 40%
-mod:add_buff_function("markus_hero_time_reset", function (unit, buff, params)
-	local player_unit = unit
-
-	if Unit.alive(player_unit) then
-		local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
-
-		career_extension:reduce_activated_ability_cooldown_percent(0.4)
-	end
-end)
-mod:add_text("markus_knight_charge_reset_on_incapacitated_allies_desc", "Refunds 40% of cooldown upon allied incapacitation")
-
--- numb to pain 1 sec instead of 3
+-- Talent 6-1 "Numb to Pain"; duration to 1 sec instead of 3
 mod:modify_talent_buff_template("empire_soldier", "markus_knight_ability_invulnerability_buff", {
     mechanism_overrides = {
 		versus = {
-			duration = 1.25,
+			duration = 1,
 		}
 	}
 })
@@ -741,14 +729,29 @@ mod:modify_talent("es_knight", 6, 1, {
 
 
 -- Grail Knight
+-- Talent 4-3 "Virtue of the Penitent"; increase Kill requirement for Blessing
+-- Talent 6-2 "Virtue of the Impetuous Knight"; fix talent
 
 -- Ranger Veteran
 
+--Talent 4-2 "Grungni's Cunning"; reduced ammo pouch to 20% //// |unknown|'s vibe Code -------------------- May Break or Not Work -------------------- \\\\
+mod.update = function()
+  if Managers.player and Managers.player.is_server and AllPickups and AllPickups.ammo_ranger_improved then
+    AllPickups.ammo_ranger_improved.refill_percentage = 0.2 -- change as needed
+    mod.update = nil -- stop running once applied
+  end
+end
+
 -- IronBreaker
+-- Talent 6-2 "Oi! Wazzok!"; fixed to actually Stagger Monsters
+-- Talent 6-2 "Oi! Wazzok!"; update talent description
 
 -- Slayer
 
 -- Outcast Engineer
+-- Perk "Gunsmith"; remove this perk effect for Trollhammer if possible
+-- Perk "Utility Belt"; reduced to 2
+-- Talent 2-3 "Bombardier"; starts missions with 0 bombs
 
 -- Waystalker
 
@@ -757,6 +760,7 @@ mod:modify_talent("es_knight", 6, 1, {
 -- Shade
 
 -- Sister of the Thorn
+-- Perk 3 "An Attendance of Munificents"; reduce to 20%
 
 -- Witch Hunter Captain
 
@@ -766,8 +770,8 @@ mod:modify_talent("es_knight", 6, 1, {
 
 -- Warrior Priest
 
--- reduce the damage of WP bubble
--- reduced it by 66% against monsters
+-- Career Skill "Shield of Faith"; reduce the damage of WP bubble
+-- Career Skill "Shield of Faith"; reduced it by 66% against monsters
 DLCSettings.bless.buff_templates.victor_priest_nuke_dot.buffs[1].mechanism_overrides.versus = {
     damage_profile = "victor_priest_nuke_dot_vs",
     duration = 1.5, -- 5
@@ -776,9 +780,15 @@ DLCSettings.bless.buff_templates.victor_priest_nuke_dot.buffs[1].mechanism_overr
 }
 DamageProfileTemplates.victor_priest_nuke_dot_vs.armor_modifier.attack[3] = 1.0
 
+-- Career Skill "Shield of Faith"; reduce distance that bubble can be thrown 20 meters to 12 meters
+-- Talent 4-3 "From Fury, Fortitude"; reduce healing to 1%
+-- Talent 6-3 "The Comet's Gift"; reduce time to heal damage taken to 1 second
+
 -- Battle Wizard
 
 -- Pyromancer
+-- Talent 4-1 "Deathly Dissipation"; reduce overheat reduction from 100% to 80% (placeholder till FS fixes it)
+-- Talent 4-1 "Deathly Dissipation"; update talent description
 
 -- Unchained
 
@@ -953,3 +963,5 @@ for item_template_name, item_template in pairs(Weapons) do
 		end
 	end
 end
+
+mod:echo("Versus Balance Testing v0.1")
